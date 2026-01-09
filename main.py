@@ -14,15 +14,24 @@ task_dict={
     }
 
 
+def write_in_json_file(file_path:str,data):
+    try:
+        with open(file_path, 'w') as f:
+            json.dump(data, f)
+    except:
+        print("Error in saving json file!!")
+
+
 def creat_or_read_json(file_path:str):
     '''This function checks if the file exists then creat or read the file'''
     global json_text
     if os.path.exists(file_path):
-        with open(file_path, 'r+') as f:
+        with open(file_path) as f:
             json_text = json.load(f)
     else:
         try:
             with open(file_path, 'w' ,encoding='utf-8') as outfile:
+                data={}
                 json.dump(data, outfile, sort_keys=True, indent=4)
         except :
             print("The file format is not correct!!")
@@ -44,6 +53,30 @@ def set_control_args():
     return args_
 
 
+def add_command(task_description):
+
+        #json_text , task_dict  global
+
+        #Description inserted 
+        description = task_description
+        #Generate an unique ID 
+        uni_id = int(sorted(json_text.keys())[-1][5:]) + 1  if len(list(json_text.keys()))  >=1 else 1
+        #Extract time 
+        creating_time_date = str(datetime.datetime.now())
+        
+        
+        task_name=f"Task_{uni_id}"
+        json_text[task_name] = task_dict.copy()
+        json_text[task_name]["id"] = uni_id
+        json_text[task_name]["status"] = "todo"
+        json_text[task_name]["description"] = description
+        json_text[task_name]["createdAt"] = creating_time_date
+        json_text[task_name]["updatedAt"] = creating_time_date
+        
+        write_in_json_file(file_path,json_text)
+
+        print(f'Task added successfully (ID: {uni_id})')
+
 
 
 
@@ -51,20 +84,7 @@ def initialize_arguments(args):
 
     ## Add command
     if args.add is not None :
-        #check the increasment Ids to give the task a unique ID 
-
-        uni_id = int(sorted(json_text.keys())[-1][5:]) + 1
-        creating_time_date = str(datetime.datetime.now())
-        print(uni_id)
-        describtion = args.add
-        task_name=f"Task_{uni_id}"
-        json_text[task_name] = task_dict.copy()
-        json_text[task_name].id = uni_id
-        json_text[task_name].status = "todo"
-        json_text[task_name].description = description
-        json_text[task_name].createdAt = creating_time_date
-        json_text[task_name].updatedAt = creating_time_date
-        
+        add_command(args.add)
 
 
 
