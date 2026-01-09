@@ -80,9 +80,10 @@ def update_command(task_id,new_task_describtion):
 
     #json_text , task_dict  global
 
-
+    updating_time_date = str(datetime.datetime.now())
     task_name=f"Task_{task_id}"
     json_text[task_name]["description"] = new_task_describtion
+    json_text[task_name]["updatedAt"] = updating_time_date
     write_in_json_file(file_path,json_text)
     print(f'Task updated successfully (ID: {task_id})')
 
