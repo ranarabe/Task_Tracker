@@ -78,23 +78,35 @@ def add_command(task_description):
 
 def update_command(task_id,new_task_describtion):
 
+    #json_text , task_dict  global
+
+
     task_name=f"Task_{task_id}"
     json_text[task_name]["description"] = new_task_describtion
     write_in_json_file(file_path,json_text)
     print(f'Task updated successfully (ID: {task_id})')
 
+def delete_command(task_id):
+    #json_text , task_dict  global
+
+    task_name=f"Task_{task_id}"
+
+    json_text.pop(task_name)
+    write_in_json_file(file_path,json_text)
+    print(f'Task deleted successfully (ID: {task_id})')
 
 
 def initialize_arguments(args):
 
     ## Add command
     if args.add is not None :
-
         add_command(args.add)
 
     elif args.update is not None :
-
         update_command(args.update[0],args.update[1])
+
+    elif args.delete is not None :
+        delete_command(args.delete)
 
     elif args.mark_in_progress is not None :
 
