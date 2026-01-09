@@ -103,6 +103,20 @@ def delete_command(task_id):
     print(f'Task deleted successfully (ID: {task_id})')
 
 
+def list_command(List_type ):
+
+    task_in_type =[]
+
+    for task_name , task in json_text.items():
+        if json_text[task_name]['status']==List_type:
+            task_in_type.append(json_text[task_name]["description"])
+    
+    print(f"The List of Tasks '{List_type}':")
+    for task in task_in_type:
+        print(f"- {task} ")
+
+
+
 def initialize_arguments(args):
 
     ## Add command
@@ -116,17 +130,16 @@ def initialize_arguments(args):
         delete_command(args.delete)
 
     elif args.mark_in_progress is not None :
-
-        task_marking = "in-progress"
-
+        update_command( args.mark_in_progress ,task_status="in-progress")
+       
     elif args.mark_todo is not None : 
-        task_marking = "todo"
+        update_command( args.mark_todo ,task_status="todo")
 
     elif args.mark_done is not None :
-        task_marking = "done"
+        update_command( args.mark_done ,task_status="done")
 
     elif args.list is not None :
-        list_type = args.list 
+        list_command(args.list)
 
 
 
