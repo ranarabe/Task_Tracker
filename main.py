@@ -64,7 +64,6 @@ def add_command(task_description):
         #Extract time 
         creating_time_date = str(datetime.datetime.now())
         
-        
         task_name=f"Task_{uni_id}"
         json_text[task_name] = task_dict.copy()
         json_text[task_name]["id"] = uni_id
@@ -77,6 +76,12 @@ def add_command(task_description):
 
         print(f'Task added successfully (ID: {uni_id})')
 
+def update_command(task_id,new_task_describtion):
+
+    task_name=f"Task_{task_id}"
+    json_text[task_name]["description"] = new_task_describtion
+    write_in_json_file(file_path,json_text)
+    print(f'Task updated successfully (ID: {task_id})')
 
 
 
@@ -84,17 +89,15 @@ def initialize_arguments(args):
 
     ## Add command
     if args.add is not None :
+
         add_command(args.add)
 
-
-
-
-
     elif args.update is not None :
-        task_id = args.update[0]
-        describtion = args.update[1]
+
+        update_command(args.update[0],args.update[1])
 
     elif args.mark_in_progress is not None :
+
         task_marking = "in-progress"
 
     elif args.mark_todo is not None : 
