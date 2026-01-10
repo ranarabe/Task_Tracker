@@ -33,6 +33,7 @@ def creat_or_read_json(file_path:str):
             with open(file_path, 'w' ,encoding='utf-8') as outfile:
                 data={}
                 json.dump(data, outfile, sort_keys=True, indent=4)
+                json_text={}
         except :
             print("The file format is not correct!!")
 
@@ -54,56 +55,80 @@ def set_control_args():
 
 
 def add_command(task_description):
+        '''This function add a new task to the json file'''
 
         #json_text , task_dict  global
 
-        #Description inserted 
-        description = task_description
-        #Generate an unique ID 
-        uni_id = int(sorted(json_text.keys())[-1][5:]) + 1  if len(list(json_text.keys()))  >=1 else 1
-        #Extract time 
-        creating_time_date = str(datetime.datetime.now())
-        
-        task_name=f"Task_{uni_id}"
-        json_text[task_name] = task_dict.copy()
-        json_text[task_name]["id"] = uni_id
-        json_text[task_name]["status"] = "todo"
-        json_text[task_name]["description"] = description
-        json_text[task_name]["createdAt"] = creating_time_date
-        json_text[task_name]["updatedAt"] = creating_time_date
-        
-        write_in_json_file(file_path,json_text)
+        description = task_description  #Inserted description
+        task_exists = False
 
-        print(f'Task added successfully (ID: {uni_id})')
+        #Check if the task exists befor to avoid deplicated tasks
+        for name , task in json_text.items():
+            if json_text[name]['description']==task_description:
+                task_exists=True
+                print("This Task exists before")
+                break
+
+        if task_exists == True:
+            #Generate an unique ID 
+            uni_id = int(sorted(json_text.keys())[-1][5:]) + 1  if len(list(json_text.keys()))  >=1 else 1
+            #Extract time 
+            creating_time_date = str(datetime.datetime.now())
+            
+            task_name=f"Task_{uni_id}"
+            json_text[task_name] = task_dict.copy()
+            json_text[task_name]["id"] = uni_id
+            json_text[task_name]["status"] = "todo"
+            json_text[task_name]["description"] = description
+            json_text[task_name]["createdAt"] = creating_time_date
+            json_text[task_name]["updatedAt"] = creating_time_date
+            
+            #save the json file 
+            write_in_json_file(file_path,json_text)
+
+            print(f'Task added successfully (ID: {uni_id})')
 
 def update_command(task_id,new_task_describtion=None ,task_status=None):
+    '''This function update (describtion - status ) of the tasks which are existed before'''
 
     #json_text , task_dict  global
 
     updating_time_date = str(datetime.datetime.now())
     task_name=f"Task_{task_id}"
-    json_text[task_name]["updatedAt"] = updating_time_date
+    try :
+            
+        json_text[task_name]["updatedAt"] = updating_time_date
 
-    if task_status == None:
-        json_text[task_name]["description"] = new_task_describtion
-    else :
-        json_text[task_name]["status"] = task_status
+        if task_status == None:
+            #update the description 
+            json_text[task_name]["description"] = new_task_describtion
+        else :
+            #update the task status 
+            json_text[task_name]["status"] = task_status
 
+        #save the json file 
+        write_in_json_file(file_path,json_text)
 
-    write_in_json_file(file_path,json_text)
-    print(f'Task updated successfully (ID: {task_id})')
+        print(f'Task updated successfully (ID: {task_id})')
+    except:
+        print(f"Task with ID = {task_id} does not exist")
 
 def delete_command(task_id):
+    '''This function delete the task'''
     #json_text , task_dict  global
 
     task_name=f"Task_{task_id}"
+    try:
+        json_text.pop(task_name)
+        write_in_json_file(file_path,json_text)
+        print(f'Task deleted successfully (ID: {task_id})')
+    except:
+        print(f"Task with ID = {task_id} does not exist")
 
-    json_text.pop(task_name)
-    write_in_json_file(file_path,json_text)
-    print(f'Task deleted successfully (ID: {task_id})')
 
 
-def list_command(List_type ):
+def list_command(List_type):
+    '''This function list the tasks based on the list type'''
 
     task_in_type =[]
 
@@ -117,28 +142,29 @@ def list_command(List_type ):
 
 
 
-def initialize_arguments(args):
+def handle_commands(args):
+    '''This function to handle the input commands from the user'''
 
-    ## Add command
-    if args.add is not None :
+    
+    if args.add is not None :  ## Add command
         add_command(args.add)
 
-    elif args.update is not None :
+    elif args.update is not None : ## Update command
         update_command(args.update[0],args.update[1])
 
-    elif args.delete is not None :
+    elif args.delete is not None : ## Delete command
         delete_command(args.delete)
 
-    elif args.mark_in_progress is not None :
+    elif args.mark_in_progress is not None :## Update task status to in-progress
         update_command( args.mark_in_progress ,task_status="in-progress")
        
-    elif args.mark_todo is not None : 
+    elif args.mark_todo is not None :  ## Update task status to todo
         update_command( args.mark_todo ,task_status="todo")
 
-    elif args.mark_done is not None :
+    elif args.mark_done is not None : ## Update task status to done
         update_command( args.mark_done ,task_status="done")
 
-    elif args.list is not None :
+    elif args.list is not None : ## List command
         list_command(args.list)
 
 
@@ -147,4 +173,4 @@ creat_or_read_json(file_path)
 
 args=set_control_args()
 
-initialize_arguments(args)
+handle_commands(args)
