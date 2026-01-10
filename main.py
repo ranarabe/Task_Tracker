@@ -15,6 +15,7 @@ task_dict={
 
 
 def write_in_json_file(file_path:str,data):
+    '''This function for write and save json file'''
     try:
         with open(file_path, 'w') as f:
             json.dump(data, f)
@@ -38,6 +39,8 @@ def creat_or_read_json(file_path:str):
             print("The file format is not correct!!")
 
 def set_control_args():
+    '''This function define the control areguments'''
+
     parser = argparse.ArgumentParser(
                         prog='Task CLI',
                         description='Task tracker is a project used to track and manage tasks.',
@@ -135,10 +138,13 @@ def list_command(List_type):
     for task_name , task in json_text.items():
         if json_text[task_name]['status']==List_type:
             task_in_type.append(json_text[task_name]["description"])
-    
-    print(f"The List of Tasks '{List_type}':")
-    for task in task_in_type:
-        print(f"- {task} ")
+
+    if len(task_in_type) == 0:
+        print(f"The List of Tasks '{List_type}' is empty")
+    else:
+        print(f"The List of Tasks '{List_type}':")
+        for task in task_in_type:
+            print(f"- {task} ")
 
 
 
