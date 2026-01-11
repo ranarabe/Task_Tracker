@@ -126,21 +126,23 @@ class Task_traker():
         '''This function list the tasks based on the list type'''
 
         task_in_type =[]
-        #if List_type ['done', 'todo', 'in-progress']
-       
-        for task_name , task in self.json_text.items():
-            if self.json_text[task_name]['status']==List_type or List_type =="all":
-                task_in_type.append(self.json_text[task_name]["description"])
-
-        if len(task_in_type) == 0:
-            print(f"The list of tasks '{List_type}' is empty")
+        if List_type not in  ['done', 'todo', 'in-progress','all']:
+            print(f"The list of tasks does not exist")
         else:
-            if List_type == "all":
-                print(f"The list of all tasks :")
+        
+            for task_name , task in self.json_text.items():
+                if self.json_text[task_name]['status']==List_type or List_type =="all":
+                    task_in_type.append(self.json_text[task_name]["description"])
+
+            if len(task_in_type) == 0:
+                print(f"The list of tasks '{List_type}' is empty")
             else:
-                print(f"The list of tasks '{List_type}':")
-            for task in task_in_type:
-                print(f"- {task} ")
+                if List_type == "all":
+                    print(f"The list of all tasks :")
+                else:
+                    print(f"The list of tasks '{List_type}':")
+                for task in task_in_type:
+                    print(f"- {task} ")
 
     def handle_commands(self,args):
         '''This function to handle the input commands from the user'''
