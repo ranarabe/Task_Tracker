@@ -46,11 +46,11 @@ class Task_traker():
                             epilog='Text at the bottom of help')
         parser.add_argument('-add',"--add" ,help='Describtion of the task.')
         parser.add_argument('-update', '--update',nargs = '*' ,help='Update specific task.')
-        parser.add_argument('-delete', '--delete', help='delete specific task.')
-        parser.add_argument('-mark_in_progress', '--mark-in-progress',)
-        parser.add_argument('-mark_done', '--mark-done',)
-        parser.add_argument('-mark_todo', '--mark-todo',)
-        parser.add_argument('-list ', '--list',nargs="?", default='all', const='all')
+        parser.add_argument('-delete', '--delete', help='delete specific task.', type=int)
+        parser.add_argument('-mark_in_progress', '--mark-in-progress',type=int)
+        parser.add_argument('-mark_done', '--mark-done',type=int)
+        parser.add_argument('-mark_todo', '--mark-todo',type=int)
+        parser.add_argument('-list', '--list',nargs="?", default='all', const='all')
 
         args_ = parser.parse_args()
         return args_
@@ -70,7 +70,11 @@ class Task_traker():
 
             if task_exists == False:
                 #Generate an unique ID 
-                uni_id = int(sorted(self.json_text.keys())[-1][5:]) + 1  if len(list(self.json_text.keys()))  >=1 else 1
+                if self.json_text:
+                    ids = [int(k.split("_")[1]) for k in self.json_text.keys()]
+                    uni_id = max(ids) + 1
+                else:
+                    uni_id = 1
                 #Extract time 
                 creating_time_date = str(datetime.datetime.now())
                 
