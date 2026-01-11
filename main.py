@@ -166,7 +166,6 @@ class Task_traker():
             self.update_command( args.mark_done ,task_status="done")
 
         elif args.list is not None : ## List command
-            print(args.list)
             self.list_command(args.list)
 
     def main(self):
